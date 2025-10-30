@@ -262,18 +262,83 @@ export default function PortfolioHoang() {
       </motion.section>
 
       {/* CONTACT */}
-      <motion.section id="contact" variants={fadeIn} initial="hidden" whileInView="show" className="py-20 px-6 text-center">
-        <h2 className={`text-4xl mb-6 font-semibold ${bgBase.heading}`}>Contact</h2>
-        <motion.form variants={zoomIn} className="max-w-md mx-auto space-y-3">
-          <input type="text" placeholder="Your Name" className={`w-full p-3 ${bgBase.inputBg} border ${bgBase.inputBorder} rounded focus:outline-none`} />
-          <input type="email" placeholder="Your Email" className={`w-full p-3 ${bgBase.inputBg} border ${bgBase.inputBorder} rounded focus:outline-none`} />
-          <textarea placeholder="Your Message" rows="4" className={`w-full p-3 ${bgBase.inputBg} border ${bgBase.inputBorder} rounded focus:outline-none`} />
-          <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className={`px-6 py-3 border ${bgBase.btnBorder} ${bgBase.btnText} ${bgBase.btnHover} rounded-full transition font-medium`}>
-            Send Message
-          </motion.button>
-        </motion.form>
-        <motion.p variants={fadeIn} className="text-gray-500 mt-10 text-sm">© 2025 Phan Văn Võ Hoàng | All rights reserved.</motion.p>
-      </motion.section>
+<motion.section
+  id="contact"
+  variants={fadeIn}
+  initial="hidden"
+  whileInView="show"
+  className="py-20 px-6 text-center"
+>
+  <h2 className={`text-4xl mb-6 font-semibold ${bgBase.heading}`}>Contact</h2>
+
+  <motion.form
+    onSubmit={async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const statusEl = document.getElementById("form-status");
+
+      try {
+        statusEl.textContent = "⏳ Sending message...";
+        const response = await fetch("https://formspree.io/f/xrbolgod", {
+          method: "POST",
+          body: formData,
+          headers: { Accept: "application/json" },
+        });
+
+        if (response.ok) {
+          statusEl.textContent = "✅ Message sent successfully!";
+          form.reset();
+        } else {
+          statusEl.textContent = "❌ Failed to send. Please try again later.";
+        }
+      } catch (error) {
+        statusEl.textContent = "❌ Network error. Please try again.";
+      }
+
+      // Tự ẩn thông báo sau 5s
+      setTimeout(() => (statusEl.textContent = ""), 5000);
+    }}
+    className="max-w-md mx-auto space-y-3"
+  >
+    <input
+      type="text"
+      name="name"
+      placeholder="Your Name"
+      className={`w-full p-3 ${bgBase.inputBg} border ${bgBase.inputBorder} rounded focus:outline-none`}
+      required
+    />
+    <input
+      type="email"
+      name="email"
+      placeholder="Your Email"
+      className={`w-full p-3 ${bgBase.inputBg} border ${bgBase.inputBorder} rounded focus:outline-none`}
+      required
+    />
+    <textarea
+      name="message"
+      rows="4"
+      placeholder="Your Message"
+      className={`w-full p-3 ${bgBase.inputBg} border ${bgBase.inputBorder} rounded focus:outline-none`}
+      required
+    ></textarea>
+
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      type="submit"
+      className={`w-full px-6 py-3 border ${bgBase.btnBorder} ${bgBase.btnText} ${bgBase.btnHover} rounded-full transition font-medium`}
+    >
+      Send Message
+    </motion.button>
+
+    <p id="form-status" className="text-sm mt-3 text-gray-400"></p>
+  </motion.form>
+
+  <motion.p variants={fadeIn} className="text-gray-500 mt-10 text-sm">
+    © 2025 Phan Văn Võ Hoàng | All rights reserved.
+  </motion.p>
+</motion.section>
 
       {/* MODAL */}
       {activeImage && (
